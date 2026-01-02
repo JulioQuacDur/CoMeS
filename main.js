@@ -1,6 +1,5 @@
 import { Pane } from 'https://cdn.jsdelivr.net/npm/tweakpane@4.0.3/dist/tweakpane.min.js';
 import {GeometryState} from './geometry.js'
-import * as tweaker from './tweaking_logic.js'
 
 const geoState = new GeometryState();
 const anglesPane = new Pane();
