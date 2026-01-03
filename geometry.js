@@ -17,18 +17,43 @@ export class GeometryState{
             "z1": [0.5,0.0],
             "z2": [1.0,0.0],
             "z3": [1.5,0.0],
-            "z4": [5,0.0]
+            "z4": [4,0.0]
         };
         this.polygonPoints = {};
         this.initPoints();
         this.updatePoints();
     }
-    
+
     initPoints(){
         const names = ["A","C","Cp","B","v0","v1","v-1","v2","v-2","v3","v-3","v4","v-4","v*"]
         for (const name of names){
             this.polygonPoints[name] = {coordXY:[0.0,0.0],coordZ:[0.0,0.0,0.0,0.0]}
         }
+    }
+
+    getVPointsCoord(){
+        return [this.polygonPoints["v0"].coordXY,
+                this.polygonPoints["v1"].coordXY,
+                this.polygonPoints["v2"].coordXY,
+                this.polygonPoints["v3"].coordXY,
+                this.polygonPoints["v4"].coordXY,
+                this.polygonPoints["v*"].coordXY,
+                this.polygonPoints["v-4"].coordXY,
+                this.polygonPoints["v-3"].coordXY,
+                this.polygonPoints["v-2"].coordXY,
+                this.polygonPoints["v-1"].coordXY]
+    }
+
+    getABCPointsCoord(){
+        return [this.polygonPoints["A"].coordXY,
+                this.polygonPoints["C"].coordXY,
+                this.polygonPoints["Cp"].coordXY,
+                this.polygonPoints["B"].coordXY]
+    }
+
+    updateZPoint(name, newCoords){
+        this.zPoints[name] = newCoords
+        this.updatePoints();
     }
 
 
@@ -38,12 +63,8 @@ export class GeometryState{
     }
     
     updatePoints(){
-        console.log("This is the point before")
-        console.log(this.polygonPoints)
         this.updatePointsZCoord();
         this.updatePolygonXYCoord();
-        console.log("This is the point after")
-        console.log(this.polygonPoints)
     }
 
     updatePointsZCoord(){
