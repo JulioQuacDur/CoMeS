@@ -15,22 +15,31 @@ anglesPane.addBinding(geoState.angles,'theta',{min:0.0,max: 1.0}).on('change',
                                                           geoState.updateAngles();
                                                           console.log(geoState.angles);});
 
-function drawPolygon(points, p,color){
+function drawPolygonLine(points,p,size,color,dashed = null){
     p.stroke(color);
-    p.strokeWeight(10);
+    p.strokeWeight(size);
+
+    if(dashed != null){
+        p.drawingContext.setLineDash(dashed)
+    }
+
+    for(let i = 0; i < points.length-1; i++){
+        p.line(points[i][0],points[i][1],points[i+1][0],points[i+1][1]);
+    }
+    p.line(points[points.length-1][0],points[points.length-1][1],
+           points[0][0],points[0][1]);
+
+    p.drawingContext.setLineDash([])
+}
+
+function drawPoints(points,p,size,color){
+    p.stroke(color);
+    p.strokeWeight(size);
     for(const point of points){
         p.point(point[0],point[1])
     }
 
-    p.strokeWeight(2);
-    for(let i = 0; i < points.length-1; i++){
-        p.line(points[i][0],points[i][1],points[i+1][0],points[i+1][1]);
-    }
-
-    p.line(points[points.length-1][0],points[points.length-1][1],
-           points[0][0],points[0][1]);
 }
-
 
 const sketchPolygonPoints = (p) => {
     let container = document.getElementById('canvasPolygonPoints');
@@ -76,21 +85,23 @@ const sketchPolygonPoints = (p) => {
     p.draw = () => {
         p.clear();
         setScale();
-        const vPoints = coordXYToCanvasCoordList(geoState.getVPointsCoord());
-        drawPolygon(vPoints,p,'purple');
-        p.stroke('purple');
-        p.strokeWeight(10);
-        console.log(geoState.polygonPoints);
-        let pp;
-        pp = coordXYToCanvasCoord(geoState.polygonPoints["A"].coordXY)
-        p.point(pp[0],pp[1])
-        pp = coordXYToCanvasCoord(geoState.polygonPoints["B"].coordXY)
-        p.point(pp[0],pp[1])
-        pp = coordXYToCanvasCoord(geoState.polygonPoints["C"].coordXY)
-        p.point(pp[0],pp[1])
-        pp = coordXYToCanvasCoord(geoState.polygonPoints["Cp"].coordXY)
-        p.point(pp[0],pp[1])
 
+        // Drawing the triangles that change.
+        const triangles = geoState.getTriangles();
+        const trianglesCanvasCoordinates = [];
+        for(const triangle of triangles){
+            trianglesCanvasCoordinates.push(coordXYToCanvasCoordList(triangle));
+        }
+        
+        for(const triangle of trianglesCanvasCoordinates){
+            drawPolygonLine(triangle,p,2,'black',[10,10]);
+            drawPoints(triangle,p,6,'black');
+        }
+
+        // Drawing the main polygon.
+        const vPoints = coordXYToCanvasCoordList(geoState.getVPointsCoord());
+        drawPolygonLine(vPoints,p,3,'purple');
+        drawPoints(vPoints,p,10,'purple');
     }
 }
 

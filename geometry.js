@@ -1,10 +1,6 @@
 import { create, all } from 'https://esm.sh/mathjs?bundle';
-
-const PHI_STANDARD = Math.PI/3
-const THETA_STANDARD = Math.PI/4
-const PSI_STANDARD = Math.PI - PHI_STANDARD- PHI_STANDARD
-
 const math = create(all);
+
 
 export class GeometryState{
     constructor(){
@@ -77,6 +73,42 @@ export class GeometryState{
                 this.polygonPoints["C"].coordXY,
                 this.polygonPoints["Cp"].coordXY,
                 this.polygonPoints["B"].coordXY]
+    }
+
+    getTriangles(){
+        const T0 = [this.polygonPoints["A"].coordXY,
+                    this.polygonPoints["C"].coordXY,
+                    this.polygonPoints["B"].coordXY]
+
+        const T0p = [this.polygonPoints["A"].coordXY,
+                     this.polygonPoints["Cp"].coordXY,
+                     this.polygonPoints["B"].coordXY]
+
+        const T1 = [this.polygonPoints["B"].coordXY,
+                    this.polygonPoints["v0"].coordXY,
+                    this.polygonPoints["v1"].coordXY]
+
+        const T1p = [this.polygonPoints["B"].coordXY,
+                     this.polygonPoints["v0"].coordXY,
+                     this.polygonPoints["v-1"].coordXY]
+
+        const T2 = [this.polygonPoints["C"].coordXY,
+                    this.polygonPoints["v2"].coordXY,
+                    this.polygonPoints["v3"].coordXY]
+
+        const T2p = [this.polygonPoints["Cp"].coordXY,
+                     this.polygonPoints["v-2"].coordXY,
+                     this.polygonPoints["v-3"].coordXY]
+
+        const T3 = [this.polygonPoints["A"].coordXY,
+                    this.polygonPoints["v4"].coordXY,
+                    this.polygonPoints["v*"].coordXY]
+
+        const T3p = [this.polygonPoints["A"].coordXY,
+                     this.polygonPoints["v*"].coordXY,
+                     this.polygonPoints["v-4"].coordXY]
+
+        return [T0,T0p,T1,T1p,T2,T2p,T3,T3p]
     }
 
     updateZPoint(name, newCoords){
