@@ -135,7 +135,7 @@ let sketchZPoints = (p) => {
     p.mousePressed = () => {
         for(const [key,value] of Object.entries(geoState.zPoints)){
             const zPoint = coordXYToCanvasCoord(value);
-            if(p.dist(p.mouseX,p.mouseY,zPoint[0],zPoint[1]) < globalScale){
+            if(p.dist(p.mouseX,p.mouseY,zPoint[0],zPoint[1]) < 0.2*globalScale){
                 clickedPoint = key
             }
         }
