@@ -44,6 +44,34 @@ export class GeometryState{
                 this.polygonPoints["v-1"].coordXY]
     }
 
+    getXLimits(){
+        let xmin = 0;
+        let xmax = 0;
+        for (const [key,value] of Object.entries(this.polygonPoints)){
+            const x0 = value.coordXY[0]
+            xmin = Math.min(x0,xmin);
+            xmax = Math.max(x0,xmax);
+        }
+        return [xmin,xmax];
+    }
+
+    getYLimits(){
+        let ymin = 0;
+        let ymax = 0;
+        for (const [key,value] of Object.entries(this.polygonPoints)){
+            const y0 = value.coordXY[1];
+            ymin = Math.min(y0,ymin);
+            ymax = Math.max(y0,ymax);
+        }
+        return [ymin,ymax];
+    }
+
+    getCenter(){
+        const [xmin,xmax] = this.getXLimits();
+        const [ymin,ymax] = this.getYLimits();
+        return [(xmin+xmax)/2,(ymin+ymax)/2]
+    }
+
     getABCPointsCoord(){
         return [this.polygonPoints["A"].coordXY,
                 this.polygonPoints["C"].coordXY,
@@ -70,7 +98,7 @@ export class GeometryState{
     updatePointsZCoord(){
         const i = math.complex(0, 1), sin = math.sin, cos = math.cos, exp = math.exp, mul = math.multiply;
         const imin = math.complex(0, -1)
-        const theta = this.angles.theta, phi = this.angles.phi, psi = this.angles.psi;
+        const theta = Math.PI*this.angles.theta, phi = Math.PI*this.angles.phi, psi = Math.PI*this.angles.psi;
 
         this.polygonPoints["A"].coordZ = [0,0,0,0];
         this.polygonPoints["C"].coordZ = [0,0,0,mul(sin(psi)/sin(theta),exp(mul(i,phi)))];
@@ -109,7 +137,6 @@ export class GeometryState{
             value.coordXY = [x,y];
         }
     }
-
 }
 
 

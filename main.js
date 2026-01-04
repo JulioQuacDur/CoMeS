@@ -36,11 +36,11 @@ const sketchPolygonPoints = (p) => {
     let container = document.getElementById('canvasPolygonPoints');
     let globalScale = 0.1*p.width;
     let centerPoint = [p.width/10,p.height/2]
-    
 
     function coordXYToCanvasCoord(point){
-        return [centerPoint[0] + globalScale*point[0],
-                centerPoint[1] - globalScale*point[1]]
+        const geoCenter = geoState.getCenter();
+        return [centerPoint[0] + globalScale*(point[0]-geoCenter[0]),
+                centerPoint[1] - globalScale*(point[1]-geoCenter[1])]
     }
     
     function coordXYToCanvasCoordList(points){
@@ -51,47 +51,63 @@ const sketchPolygonPoints = (p) => {
         return res;
     }
 
+    function setScale(){
+        const [xmin,xmax] = geoState.getXLimits();
+        const [ymin,ymax] = geoState.getYLimits();
+        const xy_width = xmax - xmin;
+        const xy_height = ymax - ymin;
+        const canva_width = p.width;
+        const canva_height = p.height;
+        globalScale = 0.95*Math.min(canva_width/xy_width,canva_height/xy_height);
+        centerPoint = [p.width/2,p.height/2];
+    }
 
     p.windowResized = () => {
         p.resizeCanvas(container.offsetWidth,container.offsetHeight);
-        centerPoint = [p.width/10,p.height/3]
+        setScale();
     }
 
-
     p.setup = () => {
-        let canvasWidth = container.offsetWidth;
-        let canvasHeight = container.offsetHeight;
-        let canvas = p.createCanvas(canvasWidth,canvasHeight);
-        globalScale = 0.1*p.width;
-        centerPoint = [p.width/10,p.height/2]
+        let canvas = p.createCanvas(container.offsetWidth,container.offsetHeight);
         canvas.parent('canvasPolygonPoints');
-
+        setScale();
     }
         
     p.draw = () => {
-        p.background(240);
-        globalScale = 0.1*p.width;
-        centerPoint = [p.width/10,p.height/3]
+        p.clear();
+        setScale();
         const vPoints = coordXYToCanvasCoordList(geoState.getVPointsCoord());
         drawPolygon(vPoints,p,'purple');
-    }
+        p.stroke('purple');
+        p.strokeWeight(10);
+        console.log(geoState.polygonPoints);
+        let pp;
+        pp = coordXYToCanvasCoord(geoState.polygonPoints["A"].coordXY)
+        p.point(pp[0],pp[1])
+        pp = coordXYToCanvasCoord(geoState.polygonPoints["B"].coordXY)
+        p.point(pp[0],pp[1])
+        pp = coordXYToCanvasCoord(geoState.polygonPoints["C"].coordXY)
+        p.point(pp[0],pp[1])
+        pp = coordXYToCanvasCoord(geoState.polygonPoints["Cp"].coordXY)
+        p.point(pp[0],pp[1])
 
+    }
 }
 
 
 let sketchZPoints = (p) => {
     let container = document.getElementById('canvasZPoints');
-    let centerPoint = [container.offsetWidth,container.offsetHeight]
-    let globalScale = container.offsetWidth*0.1;
-
+    let centerPoint = [container.offsetWidth*0.5,container.offsetHeight*0.5];
+    let globalScale = 0.1*container.offsetWidth;
     let clickedPoint = null;
 
     function coordXYToCanvasCoord(point){
+        const geo = geoState.getCenter();
         return [centerPoint[0] + globalScale*point[0],
                 centerPoint[1] - globalScale*point[1]]
     }
 
-    function canvasCoordToCoordXY(point) {
+    function canvasCoordToCoordXY(point){
         return [
             (point[0] - centerPoint[0]) / globalScale,
             -(point[1] - centerPoint[1]) / globalScale
@@ -113,9 +129,8 @@ let sketchZPoints = (p) => {
 
     p.windowResized = () => {
         p.resizeCanvas(container.offsetWidth,container.offsetHeight);
-        centerPoint = [p.width,p.height]
+        centerPoint = [p.width/2,p.height/2]
     }
-
 
     p.mousePressed = () => {
         for(const [key,value] of Object.entries(geoState.zPoints)){
@@ -140,8 +155,7 @@ let sketchZPoints = (p) => {
     };
 
     p.draw = () => {
-        centerPoint = [p.width/2,p.height/2]
-        p.background(240);
+        p.clear();
         for(const [key,value] of Object.entries(geoState.zPoints)){
             const zPoint = coordXYToCanvasCoord(value)
             p.stroke('purple')
@@ -151,7 +165,6 @@ let sketchZPoints = (p) => {
             p.line(centerPoint[0],centerPoint[1],zPoint[0],zPoint[1])
         }
     }
-        
 }
 
 new p5(sketchPolygonPoints);
