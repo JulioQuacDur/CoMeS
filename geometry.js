@@ -13,7 +13,7 @@ export class GeometryState{
             "z1": [0.5,0.0],
             "z2": [1.0,0.0],
             "z3": [1.5,0.0],
-            "z4": [4,0.0]
+            "z4": [4.0,0.0]
         };
         this.polygonPoints = {};
         this.initPoints();
@@ -151,25 +151,18 @@ export class GeometryState{
     updatePolygonXYCoord(){
         const z_v = [math.complex(this.zPoints["z1"][0],this.zPoints["z1"][1]),
                      math.complex(this.zPoints["z2"][0],this.zPoints["z2"][1]),
-                     math.complex(this.zPoints["z3"][0],this.zPoints["z4"][1]),
+                     math.complex(this.zPoints["z3"][0],this.zPoints["z3"][1]),
                      math.complex(this.zPoints["z4"][0],this.zPoints["z4"][1]),
                     ]
-        console.log("this is the value of the z_v")
-        console.log(z_v)        
+
         for (const [key,value] of Object.entries(this.polygonPoints)){
             let w = math.complex(0.0,0.0);
             for(let i = 0; i < 4; i++) {
                 w = math.add(math.multiply(z_v[i],value.coordZ[i]),w)
             }
-            console.log("this is the value of the w")
-            console.log(w)        
-
             const x = math.re(w);
             const y = math.im(w);
             value.coordXY = [x,y];
         }
     }
 }
-
-
-
