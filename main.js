@@ -2,34 +2,66 @@ import { Pane } from 'https://cdn.jsdelivr.net/npm/tweakpane@4.0.3/dist/tweakpan
 import {GeometryState} from './geometry.js'
 
 const geoState = new GeometryState();
-const anglesPane = new Pane();
+const pane = new Pane();
+
+const anglesFolder = pane.addFolder({ title: 'Angles' });
+anglesFolder.addBinding(geoState.angles, 'phi', { min: 0, max: 1 });
+anglesFolder.addBinding(geoState.angles, 'theta', { min: 0, max: 1 });
+
+const config = {
+    orientation: true
+}
+
+const configFolder = pane.addFolder({ title: 'Config' });
+configFolder.addBinding(config, 'orientation');
 
 
-anglesPane.addBinding(geoState.angles,'phi', {min:0.0,max: 1.0}).on('change',
-                                                     (ev) => {
-                                                         geoState.updateAngles();
-                                                         console.log(geoState.angles);
-                                                         });
-anglesPane.addBinding(geoState.angles,'theta',{min:0.0,max: 1.0}).on('change',
-                                                      (ev) => {
-                                                          geoState.updateAngles();
-                                                          console.log(geoState.angles);});
 
-function drawPolygonLine(points,p,size,color,dashed = null){
+
+function drawArrow(p,base, vec, myColor) {
+    p.push();
+    p.stroke(myColor);
+    p.strokeWeight(3);
+    p.fill(myColor);
+    p.translate(base.x, base.y);
+    p.line(0, 0, vec.x, vec.y);
+    p.rotate(vec.heading());
+    let arrowSize = 7;
+    p.translate(vec.mag() - arrowSize, 0);
+    p.triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+    p.pop();
+}
+
+
+function drawPolygonLine(points,p,size,color,dashed = null, arrow = false){
     p.stroke(color);
     p.strokeWeight(size);
 
-    if(dashed != null){
-        p.drawingContext.setLineDash(dashed)
+    if(arrow){
+        let v0;
+        let v1;
+        for(let i = 0; i < points.length-1; i++){
+            v0 = p.createVector(points[i][0],points[i][1])
+            v1 = p.createVector(points[i+1][0]-points[i][0],points[i+1][1]-points[i][1])
+            drawArrow(p,v0,v1,color);
+        }
+        v0 = p.createVector(points[points.length-1][0],points[points.length-1][1]);
+        v1 = p.createVector(points[0][0]-points[points.length-1][0],points[0][1]-points[points.length-1][1]);
+        drawArrow(p,v0,v1,color);
+    }else{
+        if(dashed != null){
+            p.drawingContext.setLineDash(dashed)
+        }
+
+        for(let i = 0; i < points.length-1; i++){
+            p.line(points[i][0],points[i][1],points[i+1][0],points[i+1][1]);
+        }
+        p.line(points[points.length-1][0],points[points.length-1][1],
+               points[0][0],points[0][1]);
+        p.drawingContext.setLineDash([])
+
     }
 
-    for(let i = 0; i < points.length-1; i++){
-        p.line(points[i][0],points[i][1],points[i+1][0],points[i+1][1]);
-    }
-    p.line(points[points.length-1][0],points[points.length-1][1],
-           points[0][0],points[0][1]);
-
-    p.drawingContext.setLineDash([])
 }
 
 function drawPoints(points,p,size,color){
@@ -98,10 +130,12 @@ const sketchPolygonPoints = (p) => {
             drawPoints(triangle,p,6,'black');
         }
 
-        // Drawing the main polygon.
         const vPoints = coordXYToCanvasCoordList(geoState.getVPointsCoord());
-        drawPolygonLine(vPoints,p,3,'purple');
-        drawPoints(vPoints,p,10,'purple');
+        console.log(config.orientation)
+        drawPolygonLine(vPoints,p,3,'purple',null,config.orientation);
+        if(!config.orientation){
+            drawPoints(vPoints,p,10,'purple');
+        }
     }
 }
 

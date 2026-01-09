@@ -39,6 +39,20 @@ html, body {
   z-index:2;
 }
 
+#toggleOptions{
+  top: 30%;
+  left: 68%;
+  width: 30%;
+  height: 30%;
+  background-color: rgb(208, 237, 247,0.90);
+  border-radius: 10px;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgb(126, 211, 241,0.90);
+  z-index:2;
+}
+
 canvas {
   display: block;        /* Removes the bottom gap */
 }
