@@ -5,8 +5,8 @@ const geoState = new GeometryState();
 const pane = new Pane();
 
 const anglesFolder = pane.addFolder({ title: 'Angles' });
-anglesFolder.addBinding(geoState.angles, 'phi', { min: 0, max: 1 });
-anglesFolder.addBinding(geoState.angles, 'theta', { min: 0, max: 1 });
+anglesFolder.addBinding(geoState.angles, 'phi', { min: 0, max: 1 }).on('change',(ev => geoState.updateAngles()));
+anglesFolder.addBinding(geoState.angles, 'theta', { min: 0, max: 1 }).on('change',(ev => geoState.updateAngles()));
 
 const config = {
     orientation: true
@@ -14,9 +14,6 @@ const config = {
 
 const configFolder = pane.addFolder({ title: 'Config' });
 configFolder.addBinding(config, 'orientation');
-
-
-
 
 function drawArrow(p,base, vec, myColor) {
     p.push();
@@ -31,7 +28,6 @@ function drawArrow(p,base, vec, myColor) {
     p.triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
     p.pop();
 }
-
 
 function drawPolygonLine(points,p,size,color,dashed = null, arrow = false){
     p.stroke(color);
@@ -131,7 +127,6 @@ const sketchPolygonPoints = (p) => {
         }
 
         const vPoints = coordXYToCanvasCoordList(geoState.getVPointsCoord());
-        console.log(config.orientation)
         drawPolygonLine(vPoints,p,3,'purple',null,config.orientation);
         if(!config.orientation){
             drawPoints(vPoints,p,10,'purple');

@@ -62,3 +62,30 @@ canvas {
     flex-direction: column; /* Stack vertically */
   }
 }
+
+
+
+:root {
+    --tp-base-font-size: 24px !important;
+    --tp-base-background-color: rgb(126, 211, 241, 0.9);
+    --tp-base-shadow-color: rgb(126, 211, 241, 0.9);
+    --tp-button-background-color: rgb(113, 152, 153, 0.9);
+    --tp-button-background-color-active: rgb(113, 152, 163, 0.9);
+    --tp-button-background-color-focus: rgb(113, 152, 163, 0.9);
+    --tp-button-background-color-hover: rgb(113, 152, 163, 0.9);
+    --tp-button-foreground-color: rgb(126, 211, 241, 0.9);
+    --tp-container-background-color: rgb(4, 89, 112, 0.9);
+    --tp-container-background-color-active: rgb(126, 211, 241, 0.9);
+    --tp-container-background-color-focus: rgb(126, 211, 241, 0.9);
+    --tp-container-background-color-hover: rgb(126, 211, 241, 0.9);
+    --tp-container-foreground-color: hsla(0, 0%, 100%, 0.9);
+    --tp-groove-foreground-color: rgb(126, 211, 241, 0.9);
+    --tp-input-background-color: rgb(4, 89, 112, 0.9);
+    --tp-input-background-color-active: rgb(126, 211, 241, 0.9);
+    --tp-input-background-color-focus: rgb(126, 211, 241, 0.9);
+    --tp-input-background-color-hover: rgb(126, 211, 241, 0.9);
+    --tp-input-foreground-color: hsla(0, 0%, 100%, 0.9);
+    --tp-label-foreground-color: hsla(0, 0%, 100%, 0.9);
+    --tp-monitor-background-color: rgb(126, 211, 241, 0.9);
+    --tp-monitor-foreground-color: hsla(0, 0%, 100%, 0.9);
+}
